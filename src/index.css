@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.sunny {
+  background: linear-gradient(to bottom, #87CEEB, #FFD700);
+}
+
+.cloudy {
+  background: linear-gradient(to bottom, #D3D3D3, #A9A9A9);
+}
+
+.rainy {
+  background: linear-gradient(to bottom, #2F4F4F, #4682B4);
+}
+
+.snow {
+  background: linear-gradient(to bottom, #FFFFFF, #B0E0E6);
+}
+
+.foggy {
+  background: linear-gradient(to bottom, #D3D3D3, #F5F5F5);
+}
+
+.night {
+  background: linear-gradient(to bottom, #202020, #6e6e6e);
+}

@@ -1,5 +1,6 @@
 // import { Link } from "react-router-dom"
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import '../index.css'
 
 // API Details.
 const apiKey = 'cc25d26bc930e2edf6c211fc3106986a';
@@ -24,7 +25,7 @@ interface WeatherData {
 
 function PreviewWeather() {
   const [weatherDataList, setWeatherDataList] = useState<WeatherData[]>([]);
-  const cities = ['London', 'New York', 'Tokyo', 'Paris', 'Dubai'];
+  const cities = ['London', 'Paris', 'Tokyo', 'Moscow', 'Sydney'];
 
   useEffect(() => {
     fetchWeatherDataForCities(cities);
@@ -40,10 +41,11 @@ function PreviewWeather() {
     return <div>Loading...</div>;
   }
 
+
   return (
-    <section className='flex w-11/12 h-72 mt-4 mx-auto justify-center items-center border-2 border-red-200'>
+    <section className='flex w-11/12 h-72 mt-4 mx-auto justify-center items-center border-2 border-black'>
       {weatherDataList.map((weatherData, index) => (
-        <div key={index} className='w-1/5 text-center border-2 border-x-red-200 h-full bg-red-50'>
+        <div key={index} className={`${getWeatherClass(weatherData.weather[0].icon)} w-1/5 text-center border-2 border-black h-full bg-red-50 flex flex-col justify-center`}>
           <div className="city">{weatherData.name}</div>
           <div className="temp">{weatherData.main.temp} °C</div>
           <div className="type">{weatherData.weather[0].description}</div>
@@ -62,6 +64,27 @@ function PreviewWeather() {
       ))}
     </section>
   );
+}
+
+function getWeatherClass(icon: string): string {
+  switch (icon) {
+    case '01d':
+    case '02d':
+      return 'sunny';
+    case '03d':
+    case '04d':
+      return 'cloudy';
+    case '09d':
+    case '10d':
+    case '11d':
+      return 'rainy';
+    case '13d':
+      return 'snow';
+    case '50d':
+      return 'foggy';
+    default:
+      return 'night';
+  }
 }
 
 async function getWeatherData(city: string): Promise<WeatherData> {
