@@ -25,7 +25,7 @@ interface WeatherData {
 
 function PreviewWeather() {
   const [weatherDataList, setWeatherDataList] = useState<WeatherData[]>([]);
-  const cities = ['London', 'Paris', 'Tokyo', 'Moscow', 'Sydney'];
+  const cities = ['Los Angeles', 'Hobart', 'Tokyo', 'Moscow', 'Sydney'];
 
   useEffect(() => {
     fetchWeatherDataForCities(cities);
@@ -53,7 +53,7 @@ function PreviewWeather() {
             <div className="tempLow">Low: {weatherData.main.temp_min} °C</div>
             <div className="tempHigh">High: {weatherData.main.temp_max} °C</div>
           </div>
-          <img className="icon mx-auto" src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt="Weather icon" />
+          <img className="mx-auto" src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt="Weather icon" />
           <div className="details">
             <div className="detailsRow">
               <div className="humidityRow">Humidity: {weatherData.main.humidity}%</div>

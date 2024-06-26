@@ -1,12 +1,45 @@
 import { useEffect } from 'react';
 
+// API Details.
+const apiKey = 'cc25d26bc930e2edf6c211fc3106986a';
+const apiUrl = `https://api.openweathermap.org/data/2.5/forecast/daily?appid=${apiKey}&cnt=14&units=metric`;
+
+interface ForecastData {
+  dt: number;
+  temp: {
+    min: number;
+    max: number;
+  };
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+}
+
 function UserWeather() {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
-          //fetchWeatherData(latitude, longitude);
+          const response = await fetchWeatherData(latitude, longitude);
+          console.log(response);
+          const date = new Date(response.list[0].dt * 1000);
+          console.log(date);
+          const options: Intl.DateTimeFormatOptions = {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric'
+          };
+          console.log(date.toLocaleDateString("en-US", options));
+          const userLocationSection = document.querySelector('.userLocation')
+          if (userLocationSection) {
+            userLocationSection.innerHTML =
+              `
+              <div class="text-2xl">Two Week Forecast for ${response.city.name} (${response.city.country})</div>
+              ${getForecastData(response.list)}
+            `;
+          }
         },
         (error) => {
           //setError('Error getting location');
@@ -19,13 +52,50 @@ function UserWeather() {
   }, []);
 
   return (
-    <section className="w-11/12 h-72 mt-4 mx-auto justify-center border-2 border-red-200 flex items-center">
-      <section className="userLocation flex flex-col justify-center items-center">
-        <button>Allow Location Access</button>
-        <div>Allow location access to see your local weather, or search your city above manually.</div>
+    <section className="w-11/12 mt-4 mx-auto justify-center border-2 border-black flex items-center">
+      <section className="userLocation flex flex-col justify-center items-center w-full p-4">
+        <button className="bg-green-400 p-4 rounded-lg mb-4 mt-16 hover:bg-green-500">Allow Location Access</button>
+        <div className="text-center text-gray-600">Allow location access to see your local weather. <br />Or search your city above manually.</div>
       </section>
     </section>
   )
+}
+
+async function fetchWeatherData(latitude: number, longitude: number) {
+  const response = await fetch(`${apiUrl}&lat=${latitude}&lon=${longitude}`);
+  return await response.json();
+}
+
+function getForecastData(forecast: ForecastData[]) {
+  let dailyWeather = '';
+  forecast.forEach((day) => {
+    const date = new Date(day.dt * 1000);
+    const weekdayOption: Intl.DateTimeFormatOptions = {
+      weekday: 'long'
+    };
+
+    const dateOption: Intl.DateTimeFormatOptions = {
+      month: 'long',
+      day: 'numeric'
+    };
+
+    const weekday = date.toLocaleDateString("en-US", weekdayOption);
+    const actualDate = date.toLocaleDateString("en-US", dateOption);
+
+    dailyWeather += `
+      <div class="border-2 border-black text-center">
+        <div>${weekday}<br />${actualDate}</div>
+        <div>${Math.round(day.temp.max)}</div>
+        <img class="mx-auto w-12 h-12" src=${`https://openweathermap.org/img/w/${day.weather[0].icon}.png`} alt="Weather icon" />
+        <div>${Math.round(day.temp.min)}</div>
+      </div>`;
+  });
+
+  return `
+    <section class="grid grid-cols-7 w-full text-center gap-2">
+      ${dailyWeather}
+    </section>
+  `;
 }
 
 export default UserWeather

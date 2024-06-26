@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.userLocation {
+  background: linear-gradient(#87CEEB, #1E90FF);
+}
+
 .sunny {
   background: linear-gradient(to bottom, #87CEEB, #FFD700);
 }
@@ -24,4 +28,5 @@
 
 .night {
   background: linear-gradient(to bottom, #202020, #6e6e6e);
+  color: white;
 }
