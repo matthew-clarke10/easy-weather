@@ -48,7 +48,7 @@ function PreviewWeather() {
           <div className="city text-3xl h-16 m-4">{weatherData.name}</div>
           <div className="temp text-2xl">{weatherData.main.temp} °C</div>
           <img className="mx-auto" src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt="Weather icon" />
-          <div className="temperatureLine mx-auto my-4"></div>
+          <div className="temperaturePreviewLine mx-auto my-4"></div>
           <div className="tempRange flex text-xl mb-4">
             <div className="tempLow flex flex-col mx-auto px-4 py-2 w-2/5 border-blue-600 border-4">
               <div className="tempLowHeader">Low:</div>

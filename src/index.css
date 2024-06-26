@@ -32,8 +32,12 @@
   color: #FFF;
 }
 
-.temperatureLine {
+.temperaturePreviewLine {
   width: 80%;
   height: 5px;
+  background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
+}
+
+.userLocationRangeLine {
   background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
 }
