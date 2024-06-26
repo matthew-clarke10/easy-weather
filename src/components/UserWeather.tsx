@@ -32,11 +32,11 @@ function UserWeather() {
             day: 'numeric'
           };
           console.log(date.toLocaleDateString("en-US", options));
-          const userLocationSection = document.querySelector('.userLocation')
+          const userLocationSection = document.querySelector('.userLocationWeather')
           if (userLocationSection) {
             userLocationSection.innerHTML =
               `
-              <div class="text-2xl">Two Week Forecast for ${response.city.name} (${response.city.country})</div>
+              <div class="text-2xl mb-4">Two Week Forecast for ${response.city.name} (${response.city.country})</div>
               ${getForecastData(response.list)}
             `;
           }
@@ -52,8 +52,8 @@ function UserWeather() {
   }, []);
 
   return (
-    <section className="w-11/12 mt-4 mx-auto justify-center border-2 border-black flex items-center">
-      <section className="userLocation flex flex-col justify-center items-center w-full p-4">
+    <section className="userLocationSection w-11/12 my-8 mx-auto justify-center border-2 p-4 border-black flex items-center h-96">
+      <section className="userLocationWeather flex flex-col justify-center items-center w-full h-full">
         <button className="bg-green-400 p-4 rounded-lg mb-4 mt-16 hover:bg-green-500">Allow Location Access</button>
         <div className="text-center text-gray-600">Allow location access to see your local weather. <br />Or search your city above manually.</div>
       </section>

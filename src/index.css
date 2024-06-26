@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.userLocation {
+.userLocationSection {
   background: linear-gradient(#87CEEB, #1E90FF);
 }
 
@@ -16,6 +16,7 @@
 
 .rainy {
   background: linear-gradient(to bottom, #2F4F4F, #4682B4);
+  color: #FFF;
 }
 
 .snow {
@@ -28,5 +29,11 @@
 
 .night {
   background: linear-gradient(to bottom, #202020, #6e6e6e);
-  color: white;
+  color: #FFF;
+}
+
+.temperatureLine {
+  width: 80%;
+  height: 5px;
+  background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
 }

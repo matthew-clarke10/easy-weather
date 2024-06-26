@@ -10,8 +10,10 @@ function App() {
     <Routes>
       <Route path="/" element={
         <>
+          <h1 className="text-6xl text-center my-8">EasyWeather</h1>
           <Search />
           <UserWeather />
+          <h2 className="text-4xl text-center my-8">Popular City Weather</h2>
           <PreviewWeather />
         </>
       } />
