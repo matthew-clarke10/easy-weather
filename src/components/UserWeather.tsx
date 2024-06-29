@@ -17,7 +17,11 @@ interface ForecastData {
   }[];
 }
 
-function UserWeather() {
+interface UserWeatherProps {
+  onUserWeatherLoaded: () => void;
+}
+
+function UserWeather({ onUserWeatherLoaded }: UserWeatherProps) {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -27,21 +31,24 @@ function UserWeather() {
           const userLocationSection = document.querySelector('.userLocationWeather')
           if (userLocationSection) {
             userLocationSection.innerHTML =
-              `
-              <div class="text-2xl w-full p-4 text-center border-b-2 border-b-black">Two Week Forecast for ${response.city.name} (${response.city.country})</div>
-              ${getForecastData(response.list)}
-            `;
+              `<div class="text-2xl w-full p-4 text-center border-b-2 border-b-black">
+              Two Week Forecast for ${response.city.name} (${response.city.country})
+            </div>
+            ${getForecastData(response.list)}`;
+            onUserWeatherLoaded();
           }
         },
         (error) => {
           //setError('Error getting location');
           console.error('Error getting location:', error);
+          onUserWeatherLoaded();
         }
       );
     } else {
       //setError('Geolocation is not supported by this browser.');
+      onUserWeatherLoaded();
     }
-  }, []);
+  }, [onUserWeatherLoaded]);
 
   return (
     <section className="userLocationSection w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[108]">
