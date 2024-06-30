@@ -8,6 +8,7 @@ export default {
     extend: {
       height: {
         'loading': 'calc(100vh - 12rem)',
+        'loading-preview': 'calc(100vh - 36rem)',
       },
     },
   },

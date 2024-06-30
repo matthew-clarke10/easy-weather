@@ -54,15 +54,20 @@ function App() {
   const [previewWeather, setPreviewWeather] = useState<PreviewWeatherInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [locationPermission, setLocationPermission] = useState<PermissionState>('prompt');
 
   useEffect(() => {
     async function fetchWeatherData() {
+      const result = await navigator.permissions.query({ name: 'geolocation' });
+      setLocationPermission(result.state);
       try {
         setLoading(true);
-        const userLocationWeatherData = await getUserLocationWeather();
-        setUserLocationWeather(userLocationWeatherData);
-        const previewWeatherData = await getPreviewWeather(cities);
-        setPreviewWeather(previewWeatherData);
+        if (result.state === 'prompt' || result.state === 'denied') {
+          await getPreviewWeather(cities);
+        } else {
+          getPreviewWeather(cities);
+          await getUserLocationWeather();
+        }
       } catch (e) {
         setError((e as Error).message || 'An error occurred.');
         console.error(e);
@@ -74,30 +79,27 @@ function App() {
     fetchWeatherData();
   }, []);
 
-  async function getUserLocationWeather(): Promise<NullableUserLocationWeather> {
-    return new Promise((resolve, reject) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            try {
-              const userLocationWeatherData = await fetchUserLocationWeatherData(latitude, longitude);
-              resolve(userLocationWeatherData);
-            } catch (error) {
-              reject(error);
-            }
-          },
-          (error) => {
-            //setError('Error getting location');
-            console.error('Error getting location:', error);
-            reject(error);
-          }
-        );
-      } else {
-        //setError('Geolocation is not supported by this browser.');
-        resolve(null);
+  async function getUserLocationWeather() {
+    if (navigator.geolocation) {
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        const { latitude, longitude } = position.coords;
+        try {
+          const userLocationWeatherData = await fetchUserLocationWeatherData(latitude, longitude);
+          setUserLocationWeather(userLocationWeatherData);
+        } catch (error) {
+          console.error('Error:', error);
+          setUserLocationWeather(null);
+        }
+      } catch (error) {
+        console.error('Error getting location:', error);
+        setUserLocationWeather(null);
       }
-    });
+    } else {
+      setUserLocationWeather(null);
+    }
   }
 
   async function fetchUserLocationWeatherData(latitude: number, longitude: number) {
@@ -105,10 +107,10 @@ function App() {
     return await response.json();
   }
 
-  async function getPreviewWeather(cities: string[]): Promise<PreviewWeatherInterface[]> {
+  async function getPreviewWeather(cities: string[]) {
     const previewWeatherPromises = cities.map(city => fetchPreviewWeather(city));
     const previewWeatherArray = await Promise.all(previewWeatherPromises);
-    return previewWeatherArray;
+    setPreviewWeather(previewWeatherArray);
   }
 
   async function fetchPreviewWeather(city: string): Promise<PreviewWeatherInterface> {
@@ -118,22 +120,42 @@ function App() {
   }
 
   if (loading) {
-    return (
-      <Routes>
-        <Route path="/" element={
-          <>
-            <h1 className="text-6xl text-center my-8">EasyWeather</h1>
-            <Search />
-            <div className="flex justify-center items-center h-loading">
-              <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
+    if (locationPermission === 'granted') {
+      return (
+        <Routes>
+          <Route path="/" element={
+            <>
+              <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+              <Search />
+              <div className="flex justify-center items-center h-loading">
+                <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
+                </div>
               </div>
-            </div>
-          </>
-        } />
-        <Route path="/weather/:location" element={<DetailedWeather />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    );
+            </>
+          } />
+          <Route path="/weather/:location" element={<DetailedWeather />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      );
+    } else {
+      return (
+        <Routes>
+          <Route path="/" element={
+            <>
+              <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+              <Search />
+              <UserWeather data={userLocationWeather} />
+              <div className="flex justify-center items-center h-loading-preview">
+                <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
+                </div>
+              </div>
+            </>
+          } />
+          <Route path="/weather/:location" element={<DetailedWeather />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      );
+    }
   }
 
   if (error) {
@@ -142,22 +164,24 @@ function App() {
     );
   }
 
-  return (
-    <Routes>
-      <Route path="/" element={
-        <>
-          <h1 className="text-6xl text-center my-8">EasyWeather</h1>
-          <Search />
-          <section>
-            <UserWeather data={userLocationWeather} />
-            <PreviewWeather data={previewWeather} />
-          </section>
-        </>
-      } />
-      <Route path="/weather/:location" element={<DetailedWeather />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
+  if (!loading) {
+    return (
+      <Routes>
+        <Route path="/" element={
+          <>
+            <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+            <Search />
+            <section>
+              <UserWeather data={userLocationWeather} />
+              <PreviewWeather data={previewWeather} />
+            </section>
+          </>
+        } />
+        <Route path="/weather/:location" element={<DetailedWeather />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    );
+  }
 }
 
 export default App;
