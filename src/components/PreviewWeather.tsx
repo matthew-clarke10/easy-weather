@@ -1,12 +1,4 @@
-// import { Link } from "react-router-dom"
-import { useState, useEffect } from 'react'
 import '../index.css'
-
-// API Details.
-const apiKey = 'cc25d26bc930e2edf6c211fc3106986a';
-const apiUrl = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&units=metric`;
-
-const cities = ['Hong Kong', 'Bangkok', 'London', 'Singapore', 'Macau', 'Paris', 'Dubai', 'New York City', 'Kuala Lumpur', 'Shenzhen', 'Phuket', 'Istanbul', 'Delhi', 'Tokyo', 'Rome', 'Antalya', 'Taipei', 'Guangzhou', 'Mumbai', 'Prague', 'Mecca', 'Miami', 'Amsterdam', 'Seoul', 'Pattaya', 'Shanghai', 'Los Angeles', 'Las Vegas', 'Agra', 'Osaka', 'Barcelona', 'Milan', 'Denpasar', 'Vienna', 'Cancún', 'Berlin', 'Johor Bahru', 'Johannesburg', 'Ho Chi Minh City', 'Riyadh', 'Venice', 'Jaipur', 'Madrid', 'Orlando', 'Chennai', 'Dublin', 'Florence', 'Moscow'];
 
 interface WeatherData {
   name: string;
@@ -25,29 +17,17 @@ interface WeatherData {
   };
 }
 
-interface PreviewWeatherProps {
-  onPreviewWeatherLoaded: () => void;
+interface WeatherDataProps {
+  data: WeatherData[];
 }
 
-function PreviewWeather({ onPreviewWeatherLoaded }: PreviewWeatherProps) {
-  const [weatherDataList, setWeatherDataList] = useState<WeatherData[]>([]);
-  useEffect(() => {
-    fetchWeatherDataForCities(cities);
-    onPreviewWeatherLoaded();
-  }, [onPreviewWeatherLoaded]);
-
-  const fetchWeatherDataForCities = async (cities: string[]) => {
-    const promises = cities.map(city => getWeatherData(city));
-    const weatherDataArray = await Promise.all(promises);
-    setWeatherDataList(weatherDataArray);
-  };
-
-  if (weatherDataList.length === 0) {
-    return <></>;
-  } else {
-    return (
+function PreviewWeather({ data }: WeatherDataProps) {
+  if (!data || data.length === 0) return null;
+  return (
+    <>
+      <h2 className="text-4xl text-center my-8">Weather for Popular Cities</h2>
       <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-11/12 mt-4 mx-auto justify-center items-center border-2 border-black'>
-        {weatherDataList.map((weatherData, index) => (
+        {data.map((weatherData, index) => (
           <div key={index} className={`${getWeatherClass(weatherData.weather[0].icon)} text-center border-2 border-black h-full flex flex-col justify-center`}>
             <div className="city text-3xl h-16 m-4">{weatherData.name}</div>
             <div className="temp text-2xl">{weatherData.main.temp}°C</div>
@@ -76,8 +56,8 @@ function PreviewWeather({ onPreviewWeatherLoaded }: PreviewWeatherProps) {
           </div>
         ))}
       </section>
-    );
-  }
+    </>
+  );
 }
 
 function getWeatherClass(icon: string): string {
@@ -99,12 +79,6 @@ function getWeatherClass(icon: string): string {
     default:
       return 'night';
   }
-}
-
-async function getWeatherData(city: string): Promise<WeatherData> {
-  const response = await fetch(`${apiUrl}&q=${city}`);
-  const data = await response.json();
-  return data;
 }
 
 export default PreviewWeather;
