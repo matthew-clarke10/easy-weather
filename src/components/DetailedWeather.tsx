@@ -24,6 +24,15 @@ interface DetailedWeatherProps {
   forecastWeather?: ForecastWeatherProps;
 }
 
+function getPercentage(min: number, max: number, value: number) {
+  if (((value - min) / (max - min)) * 100 > 100) {
+    return 100;
+  } else if (((value - min) / (max - min)) * 100 < 0) {
+    return 0;
+  }
+  return ((value - min) / (max - min)) * 100;
+}
+
 function DetailedWeather(props: DetailedWeatherProps) {
   const location = useLocation();
   const { state } = location;
@@ -42,7 +51,10 @@ function DetailedWeather(props: DetailedWeatherProps) {
             <div className="city text-3xl my-2">Today</div>
             <div className="temp text-2xl">{props.currentWeather.main.temp}°C</div>
             <img className="mx-auto" src={`https://openweathermap.org/img/w/${props.currentWeather.weather[0].icon}.png`} alt="Weather icon" />
-            <div className="temperaturePreviewLine mx-auto my-4"></div>
+            <div className="temperaturePreviewLine mx-auto my-4 relative">
+              <div className="bg-blue-600 absolute -top-1 lg:-top-2 w-3 lg:w-5 h-3 lg:h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, props.currentWeather.main.temp_min)}%` }}></div>
+              <div className="bg-red-600 absolute -top-1 lg:-top-2 w-3 lg:w-5 h-3 lg:h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, props.currentWeather.main.temp_max)}%` }}></div>
+            </div>
             <div className="tempRange flex text-xl mb-4">
               <div className="tempLow flex flex-col mx-auto px-4 py-2 w-2/5 border-blue-600 border-4">
                 <div className="tempLowHeader">Low:</div>
