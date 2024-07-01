@@ -6,12 +6,24 @@
   background: linear-gradient(#87CEEB, #1E90FF);
 }
 
+.userLocationSection:is(:hover, :focus) {
+  background: linear-gradient(#50a7ff, #517aff);
+}
+
 .sunny {
   background: linear-gradient(to bottom, #87CEEB, #FFD700);
 }
 
+.sunny:is(:hover, :focus) {
+  background: linear-gradient(to bottom, #FFD700, #FF8C00);
+}
+
 .cloudy {
   background: linear-gradient(to bottom, #D3D3D3, #A9A9A9);
+}
+
+.cloudy:is(:hover, :focus) {
+  background: linear-gradient(to bottom, #A9A9A9, #696969);
 }
 
 .rainy {
@@ -19,17 +31,33 @@
   color: #FFF;
 }
 
+.rainy:is(:hover, :focus) {
+  background: linear-gradient(to bottom, #4682B4, #2F4F4F);
+}
+
 .snow {
   background: linear-gradient(to bottom, #FFFFFF, #B0E0E6);
+}
+
+.snow:is(:hover, :focus) {
+  background: linear-gradient(to bottom, #B0E0E6, #ADD8E6);
 }
 
 .foggy {
   background: linear-gradient(to bottom, #D3D3D3, #F5F5F5);
 }
 
+.foggy:is(:hover, :focus) {
+  background: linear-gradient(to bottom, #F5F5F5, #D3D3D3);
+}
+
 .night {
   background: linear-gradient(to bottom, #202020, #6e6e6e);
   color: #FFF;
+}
+
+.night:is(:hover, :focus) {
+  background: linear-gradient(to bottom, #6e6e6e, #202020);
 }
 
 .temperaturePreviewLine {

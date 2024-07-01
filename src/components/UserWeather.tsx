@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import '../index.css';
 
 interface UserLocationWeatherInterface {
@@ -30,14 +31,14 @@ function UserWeather({ data }: UserWeatherProps) {
   if (data) {
     const forecastDataHtml = getForecastData(data.list);
     return (
-      <section className="userLocationSection w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[108]">
+      <Link to={`/weather/${data.city.name.replace(/\s+/g, '-').toLowerCase()}`} state={data.city.name} className="userLocationSection w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[108]">
         <section className="userLocationWeather flex flex-col justify-center items-center w-full h-full">
           <div className="text-2xl w-full p-4 text-center border-b-2 border-b-black">
             Two Week Forecast for {data.city.name} ({data.city.country})
           </div>
           {forecastDataHtml}
         </section>
-      </section>
+      </Link>
     )
   } else {
     return (

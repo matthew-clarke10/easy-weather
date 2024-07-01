@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import '../index.css'
 
 interface WeatherData {
@@ -28,7 +29,7 @@ function PreviewWeather({ data }: WeatherDataProps) {
       <h2 className="text-4xl text-center my-8">Weather for Popular Cities</h2>
       <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-11/12 mt-4 mx-auto justify-center items-center border-2 border-black'>
         {data.map((weatherData, index) => (
-          <div key={index} className={`${getWeatherClass(weatherData.weather[0].icon)} text-center border-2 border-black h-full flex flex-col justify-center`}>
+          <Link to={`/weather/${weatherData.name.replace(/\s+/g, '-').toLowerCase()}`} state={weatherData.name} key={index} className={`${getWeatherClass(weatherData.weather[0].icon)} text-center border-2 border-black h-full flex flex-col justify-center`}>
             <div className="city text-3xl h-16 m-4">{weatherData.name}</div>
             <div className="temp text-2xl">{weatherData.main.temp}°C</div>
             <img className="mx-auto" src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt="Weather icon" />
@@ -53,7 +54,7 @@ function PreviewWeather({ data }: WeatherDataProps) {
                 <div className="tempWindBody">{weatherData.wind.speed}m/s</div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </section>
     </>

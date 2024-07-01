@@ -1,10 +1,10 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Search from './components/Search';
 import UserWeather from './components/UserWeather';
 import PreviewWeather from './components/PreviewWeather';
 import DetailedWeather from './components/DetailedWeather';
 import NotFound from './components/NotFound';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, } from 'react';
 
 const apiKey = 'cc25d26bc930e2edf6c211fc3106986a';
 const apiUrlCurrent = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&units=metric`;
@@ -50,6 +50,7 @@ interface PreviewWeatherInterface {
 }
 
 function App() {
+  const location = useLocation();
   const [userLocationWeather, setUserLocationWeather] = useState<NullableUserLocationWeather>(null);
   const [previewWeather, setPreviewWeather] = useState<PreviewWeatherInterface[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,8 +77,13 @@ function App() {
       }
     }
 
-    fetchWeatherData();
-  }, []);
+    if (location.pathname === '/') {
+      fetchWeatherData();
+    } else {
+      // TO-DO
+    }
+
+  }, [location.pathname]);
 
   async function getUserLocationWeather() {
     if (navigator.geolocation) {
@@ -133,7 +139,17 @@ function App() {
               </div>
             </>
           } />
-          <Route path="/weather/:location" element={<DetailedWeather />} />
+          <Route path="/weather/:location" element={
+            <>
+              <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+              <Search />
+              <div className="flex justify-center items-center h-loading">
+                <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
+                </div>
+              </div>
+              <DetailedWeather />
+            </>
+          } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       );
@@ -151,7 +167,17 @@ function App() {
               </div>
             </>
           } />
-          <Route path="/weather/:location" element={<DetailedWeather />} />
+          <Route path="/weather/:location" element={
+            <>
+              <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+              <Search />
+              <div className="flex justify-center items-center h-loading">
+                <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
+                </div>
+              </div>
+              <DetailedWeather />
+            </>
+          } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       );
@@ -177,7 +203,15 @@ function App() {
             </section>
           </>
         } />
-        <Route path="/weather/:location" element={<DetailedWeather />} />
+        <Route path="/weather/:location" element={
+          <>
+            <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+            <Search />
+            <section>
+              <DetailedWeather />
+            </section>
+          </>
+        } />
         <Route path="*" element={<NotFound />} />
       </Routes>
     );
