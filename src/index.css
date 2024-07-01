@@ -6,7 +6,7 @@
   background: linear-gradient(#87CEEB, #1E90FF);
 }
 
-.userLocationSection:is(:hover, :focus) {
+.userLocationEnabledSection:is(:hover, :focus) {
   background: linear-gradient(#50a7ff, #517aff);
 }
 

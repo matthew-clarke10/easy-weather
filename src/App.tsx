@@ -49,41 +49,119 @@ interface PreviewWeatherInterface {
   };
 }
 
+interface CurrentWeatherInterface {
+  name: string;
+  main: {
+    temp: number;
+    temp_min: number;
+    temp_max: number;
+    humidity: number;
+  };
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+  wind: {
+    speed: number;
+  };
+}
+
+interface ForecastWeatherInterface { }
+
 function App() {
   const location = useLocation();
   const [userLocationWeather, setUserLocationWeather] = useState<NullableUserLocationWeather>(null);
   const [previewWeather, setPreviewWeather] = useState<PreviewWeatherInterface[]>([]);
+  const [currentWeather, setCurrentWeather] = useState<CurrentWeatherInterface>();
+  const [forecastWeather, setForecastWeather] = useState<ForecastWeatherInterface>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [locationPermission, setLocationPermission] = useState<PermissionState>('prompt');
+  const [loadedPreviewWeather, setLoadedPreviewWeather] = useState(false);
 
   useEffect(() => {
     async function fetchWeatherData() {
       const result = await navigator.permissions.query({ name: 'geolocation' });
       setLocationPermission(result.state);
+      console.log(locationPermission);
       try {
         setLoading(true);
         if (result.state === 'prompt' || result.state === 'denied') {
           await getPreviewWeather(cities);
         } else {
-          getPreviewWeather(cities);
+          if (!loadedPreviewWeather) {
+            getPreviewWeather(cities);
+          }
           await getUserLocationWeather();
         }
       } catch (e) {
         setError((e as Error).message || 'An error occurred.');
         console.error(e);
       } finally {
+        setLoadedPreviewWeather(true);
         setLoading(false);
       }
     }
 
-    if (location.pathname === '/') {
-      fetchWeatherData();
-    } else {
-      // TO-DO
+    async function fetchDetailedWeatherData(city: string) {
+      try {
+        setLoading(true);
+        getCurrentWeather(city);
+        await getForecastWeather(city);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
     }
 
-  }, [location.pathname]);
+    async function getCurrentWeather(city: string) {
+      const currentWeather = await fetchCurrentWeather(city);
+      setCurrentWeather(currentWeather);
+    }
+
+    async function fetchCurrentWeather(city: string) {
+      const currentWeatherResponse = await fetch(`${apiUrlCurrent}&q=${city}`);
+      const currentWeatherData = await currentWeatherResponse.json();
+      return currentWeatherData;
+    }
+
+    async function getForecastWeather(city: string) {
+      const forecastWeather = await fetchForecastWeather(city);
+      setForecastWeather(forecastWeather);
+    }
+
+    async function fetchForecastWeather(city: string) {
+      const forecastWeatherResponse = await fetch(`${apiUrlDaily}&q=${city}`);
+      const forecastWeatherData = await forecastWeatherResponse.json();
+      return forecastWeatherData;
+    }
+
+    if (location.pathname === '/') {
+      fetchWeatherData();
+    } else if (location.pathname.startsWith('/weather/')) {
+      const cityName = location.pathname.split('/weather/')[1].replace(/-/g, ' ');
+      fetchDetailedWeatherData(cityName);
+    }
+  }, [locationPermission, location.pathname]);
+
+  async function requestLocationAccess() {
+    const result = await navigator.permissions.query({ name: 'geolocation' });
+    if (result.state === 'denied') {
+      alert('Please enable location access in your browser settings.');
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocationPermission('granted');
+          console.log('Location access granted', position);
+        },
+        (error) => {
+          setLocationPermission('denied');
+          console.error('Location access denied', error);
+        }
+      );
+    }
+  }
 
   async function getUserLocationWeather() {
     if (navigator.geolocation) {
@@ -147,7 +225,7 @@ function App() {
                 <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
                 </div>
               </div>
-              <DetailedWeather />
+              <DetailedWeather currentWeather={currentWeather} forecastWeather={forecastWeather} />
             </>
           } />
           <Route path="*" element={<NotFound />} />
@@ -160,7 +238,7 @@ function App() {
             <>
               <h1 className="text-6xl text-center my-8">EasyWeather</h1>
               <Search />
-              <UserWeather data={userLocationWeather} />
+              <UserWeather locationPermission={locationPermission} requestLocationAccess={requestLocationAccess} data={userLocationWeather} />
               <div className="flex justify-center items-center h-loading-preview">
                 <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
                 </div>
@@ -175,7 +253,7 @@ function App() {
                 <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
                 </div>
               </div>
-              <DetailedWeather />
+              <DetailedWeather currentWeather={currentWeather} forecastWeather={forecastWeather} />
             </>
           } />
           <Route path="*" element={<NotFound />} />
@@ -198,7 +276,7 @@ function App() {
             <h1 className="text-6xl text-center my-8">EasyWeather</h1>
             <Search />
             <section>
-              <UserWeather data={userLocationWeather} />
+              <UserWeather locationPermission={locationPermission} requestLocationAccess={requestLocationAccess} data={userLocationWeather} />
               <PreviewWeather data={previewWeather} />
             </section>
           </>
@@ -208,7 +286,7 @@ function App() {
             <h1 className="text-6xl text-center my-8">EasyWeather</h1>
             <Search />
             <section>
-              <DetailedWeather />
+              <DetailedWeather currentWeather={currentWeather} forecastWeather={forecastWeather} />
             </section>
           </>
         } />

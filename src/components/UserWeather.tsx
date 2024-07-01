@@ -24,17 +24,19 @@ interface ForecastData {
 type NullableUserLocationWeather = UserLocationWeatherInterface | null;
 
 interface UserWeatherProps {
+  locationPermission: PermissionState;
+  requestLocationAccess: () => void;
   data: NullableUserLocationWeather;
 }
 
-function UserWeather({ data }: UserWeatherProps) {
-  if (data) {
-    const forecastDataHtml = getForecastData(data.list);
+function UserWeather(props: UserWeatherProps) {
+  if (props.data) {
+    const forecastDataHtml = getForecastData(props.data.list);
     return (
-      <Link to={`/weather/${data.city.name.replace(/\s+/g, '-').toLowerCase()}`} state={data.city.name} className="userLocationSection w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[108]">
+      <Link to={`/weather/${props.data.city.name.replace(/\s+/g, '-').toLowerCase()}`} state={props.data.city.name} className="userLocationSection userLocationEnabledSection w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[108]">
         <section className="userLocationWeather flex flex-col justify-center items-center w-full h-full">
           <div className="text-2xl w-full p-4 text-center border-b-2 border-b-black">
-            Two Week Forecast for {data.city.name} ({data.city.country})
+            Two Week Forecast for {props.data.city.name} ({props.data.city.country})
           </div>
           {forecastDataHtml}
         </section>
@@ -44,7 +46,7 @@ function UserWeather({ data }: UserWeatherProps) {
     return (
       <section className="userLocationSection w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[16rem]">
         <section className="userLocationWeather flex flex-col justify-center items-center w-full h-full">
-          <button className="bg-green-400 p-4 rounded-lg mb-4 mt-16 hover:bg-green-500">Allow Location Access</button>
+          <button onClick={props.requestLocationAccess} className="bg-green-400 p-4 rounded-lg mb-4 mt-16 hover:bg-green-500">Allow Location Access</button>
           <div className="text-center text-gray-600">Allow location access to see your local weather. <br />Or search your city above manually.</div>
         </section>
       </section>
