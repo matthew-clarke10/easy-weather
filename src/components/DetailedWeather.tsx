@@ -63,8 +63,8 @@ function DetailedWeather(props: DetailedWeatherProps) {
   if (currentWeather) {
     if (forecastWeather) {
       return (
-        <section className="w-11/12 mx-auto border-2 border-black my-8 userLocationSection">
-          <h2 className="text-4xl text-center py-8 border-b-2 border-b-black">Weather for {currentWeather.name}</h2>
+        <section className="w-11/12 mx-auto border-2 border-black my-8 bg-sky-400">
+          <h2 className="text-4xl text-center py-8 border-b-2 border-b-black">Weather for {currentWeather.name} ({forecastWeather.city.country})</h2>
           <div className="flex flex-col md:flex-row">
             <div className={`text-center flex flex-col justify-center w-full md:min-w-80 md:w-80 h-full`}>
               <div className="city text-3xl my-2">Now</div>
@@ -76,23 +76,23 @@ function DetailedWeather(props: DetailedWeatherProps) {
                   <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, currentWeather.main.temp_max)}%` }}></div>
                 </div>
               </div>
-              <div className="tempRange flex flex-col mx-auto text-2xl w-full">
+              <div className="flex flex-col mx-auto text-2xl w-full">
                 <div className="flex flex-row md:flex-col">
-                  <div className="tempLow flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-blue-400 text-white rounded-xl">
+                  <div className="tempLow flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-blue-400 rounded-xl">
                     <div className="tempLowHeader">Low:</div>
                     <div className="tempLowBody">{currentWeather.main.temp_min}°C</div>
                   </div>
-                  <div className="tempHigh flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-red-400 text-white rounded-xl">
+                  <div className="tempHigh flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-red-400 rounded-xl">
                     <div className="tempHighHeader">High:</div>
                     <div className="tempHighBody">{currentWeather.main.temp_max}°C</div>
                   </div>
                 </div>
                 <div className="flex flex-row md:flex-col">
-                  <div className="tempHumidity flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-yellow-400 text-white rounded-xl">
+                  <div className="tempHumidity flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-yellow-300 rounded-xl">
                     <div className="tempHumidityHeader">Humidity:</div>
                     <div className="tempHumidityBody">{currentWeather.main.humidity}%</div>
                   </div>
-                  <div className="tempWind flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-green-400 text-white rounded-xl">
+                  <div className="tempWind flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-green-400 rounded-xl">
                     <div className="tempWindHeader">Wind:</div>
                     <div className="tempWindBody">{currentWeather.wind.speed}m/s</div>
                   </div>

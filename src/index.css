@@ -2,70 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-.userLocationSection {
-  background-color: #87CEEB;
-}
-
-.userLocationEnabledSection:is(:hover, :focus) {
-  background-color: #50a7ff;
-}
-
-.sunny {
-  background: linear-gradient(to bottom, #87CEEB, #FFD700);
-}
-
-.sunny:is(:hover, :focus) {
-  background: linear-gradient(to bottom, #FFD700, #FF8C00);
-}
-
-.cloudy {
-  background: linear-gradient(to bottom, #D3D3D3, #A9A9A9);
-}
-
-.cloudy:is(:hover, :focus) {
-  background: linear-gradient(to bottom, #A9A9A9, #696969);
-}
-
-.rainy {
-  background: linear-gradient(to bottom, #2F4F4F, #4682B4);
-  color: #FFF;
-}
-
-.rainy:is(:hover, :focus) {
-  background: linear-gradient(to bottom, #4682B4, #2F4F4F);
-}
-
-.snow {
-  background: linear-gradient(to bottom, #FFFFFF, #B0E0E6);
-}
-
-.snow:is(:hover, :focus) {
-  background: linear-gradient(to bottom, #B0E0E6, #ADD8E6);
-}
-
-.foggy {
-  background: linear-gradient(to bottom, #D3D3D3, #F5F5F5);
-}
-
-.foggy:is(:hover, :focus) {
-  background: linear-gradient(to bottom, #F5F5F5, #D3D3D3);
-}
-
-.night {
-  background: linear-gradient(to bottom, #202020, #6e6e6e);
-  color: #FFF;
-}
-
-.night:is(:hover, :focus) {
-  background: linear-gradient(to bottom, #6e6e6e, #202020);
-}
-
-.temperaturePreviewLine {
-  width: 80%;
-  height: 5px;
-  background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
-}
-
 .rangeLine {
-  background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
+  background: linear-gradient(to right,
+      #0000FF 0%,
+      #00FF00 25%,
+      #FFFF00 50%,
+      #FFA500 75%,
+      #FF0000 100%);
 }
