@@ -66,7 +66,30 @@ interface CurrentWeatherInterface {
   };
 }
 
-interface ForecastWeatherInterface { }
+interface ForecastDay {
+  dt: number;
+  sunrise: number;
+  sunset: number;
+  temp: {
+    min: number;
+    max: number;
+  };
+  pressure: number;
+  humidity: number;
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+  speed: number;
+}
+
+interface ForecastWeatherInterface {
+  city: {
+    name: string;
+    country: string;
+  };
+  list: ForecastDay[];
+}
 
 function App() {
   const location = useLocation();
@@ -167,7 +190,7 @@ function App() {
     if (navigator.geolocation) {
       try {
         const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
+          return navigator.geolocation.getCurrentPosition(resolve, reject);
         });
         const { latitude, longitude } = position.coords;
         try {

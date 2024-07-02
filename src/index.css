@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .userLocationSection {
-  background: linear-gradient(#87CEEB, #1E90FF);
+  background-color: #87CEEB;
 }
 
 .userLocationEnabledSection:is(:hover, :focus) {
-  background: linear-gradient(#50a7ff, #517aff);
+  background-color: #50a7ff;
 }
 
 .sunny {
@@ -66,6 +66,6 @@
   background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
 }
 
-.userLocationRangeLine {
+.rangeLine {
   background: linear-gradient(to right, #0000FF 20%, #00FF00 40%, #FFFF00 60%, #FFA500 80%, #FF0000 100%);
 }

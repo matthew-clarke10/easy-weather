@@ -88,9 +88,9 @@ function getForecastData(forecast: ForecastData[]) {
             </div>
             <div className="flex flex-row items-center w-full md:w-1/2 lg:w-3/5 mr-4">
               <div>{Math.round(day.temp.min)}</div>
-              <div className="userLocationRangeLine w-16 h-1 mx-2 flex-1 relative">
-                <div className="bg-blue-600 absolute -top-1 lg:-top-2 w-3 lg:w-5 h-3 lg:h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.min)}%` }}></div>
-                <div className="bg-red-600 absolute -top-1 lg:-top-2 w-3 lg:w-5 h-3 lg:h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.max)}%` }}></div>
+              <div className="rangeLine w-16 h-3 mx-2 flex-1 relative rounded-full">
+                <div className="bg-blue-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.min)}%` }}></div>
+                <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.max)}%` }}></div>
               </div>
               <div>{Math.round(day.temp.max)}</div>
             </div>
