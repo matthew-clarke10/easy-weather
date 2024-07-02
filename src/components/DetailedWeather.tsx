@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface CurrentWeatherProps {
   name: string;
   main: {
@@ -56,9 +58,6 @@ function getPercentage(min: number, max: number, value: number) {
 
 function DetailedWeather(props: DetailedWeatherProps) {
   const { currentWeather, forecastWeather } = props;
-
-  console.log(currentWeather);
-  console.log(forecastWeather);
 
   if (currentWeather) {
     if (forecastWeather) {
@@ -139,6 +138,13 @@ function DetailedWeather(props: DetailedWeatherProps) {
     }
   }
 
+  return (
+    <section className="text-center text-2xl md:mx-24">
+      <div className="m-16">Something went wrong fetching the weather data for the city you entered (possibly the city is not recorded to determine the weather). You can try entering the city again, or try entering another city close to the one you entered.</div>
+      <Link to="/" className="rounded-lg bg-sky-400 hover:bg-sky-500 focus:bg-sky-500 px-12 py-6">Back to Home</Link>
+    </section>
+
+  );
 }
 
 export default DetailedWeather

@@ -10,3 +10,11 @@
       #FFA500 75%,
       #FF0000 100%);
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

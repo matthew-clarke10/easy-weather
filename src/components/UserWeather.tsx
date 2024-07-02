@@ -47,7 +47,7 @@ function UserWeather(props: UserWeatherProps) {
       <section className="bg-sky-400 w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[16rem]">
         <section className="userLocationWeather flex flex-col justify-center items-center w-full h-full">
           <button onClick={props.requestLocationAccess} className="bg-green-400 p-4 rounded-lg mb-4 mt-16 hover:bg-green-500">Allow Location Access</button>
-          <div className="text-center text-gray-600">Allow location access to see your local weather. <br />Or search your city above manually.</div>
+          <div className="text-center">Allow location access to see your local weather. <br />Or search your city above manually.</div>
         </section>
       </section>
     )

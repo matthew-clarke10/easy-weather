@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import Search from './components/Search';
 import UserWeather from './components/UserWeather';
 import PreviewWeather from './components/PreviewWeather';
@@ -144,9 +144,19 @@ function App() {
     }
 
     async function fetchCurrentWeather(city: string) {
-      const currentWeatherResponse = await fetch(`${apiUrlCurrent}&q=${city}`);
-      const currentWeatherData = await currentWeatherResponse.json();
-      return currentWeatherData;
+      try {
+        const currentWeatherResponse = await fetch(`${apiUrlCurrent}&q=${city}`);
+
+        if (!currentWeatherResponse.ok) {
+          throw new Error(`Error: ${currentWeatherResponse.status} ${currentWeatherResponse.statusText}`);
+        }
+
+        const currentWeatherData = await currentWeatherResponse.json();
+        return currentWeatherData;
+      } catch (e) {
+        console.error("Error fetching current weather:", e);
+        return null;
+      }
     }
 
     async function getForecastWeather(city: string) {
@@ -155,9 +165,19 @@ function App() {
     }
 
     async function fetchForecastWeather(city: string) {
-      const forecastWeatherResponse = await fetch(`${apiUrlDaily}&q=${city}`);
-      const forecastWeatherData = await forecastWeatherResponse.json();
-      return forecastWeatherData;
+      try {
+        const forecastWeatherResponse = await fetch(`${apiUrlDaily}&q=${city}`);
+
+        if (!forecastWeatherResponse.ok) {
+          throw new Error(`Error: ${forecastWeatherResponse.status} ${forecastWeatherResponse.statusText}`);
+        }
+
+        const forecastWeatherData = await forecastWeatherResponse.json();
+        return forecastWeatherData;
+      } catch (e) {
+        console.error("Error fetching forecast weather:", e);
+        return null;
+      }
     }
 
     if (location.pathname === '/') {
@@ -192,6 +212,7 @@ function App() {
         const position = await new Promise<GeolocationPosition>((resolve, reject) => {
           return navigator.geolocation.getCurrentPosition(resolve, reject);
         });
+
         const { latitude, longitude } = position.coords;
         try {
           const userLocationWeatherData = await fetchUserLocationWeatherData(latitude, longitude);
@@ -234,9 +255,10 @@ function App() {
             <>
               <h1 className="text-6xl text-center my-8">EasyWeather</h1>
               <Search />
-              <div className="flex justify-center items-center h-loading">
+              <div className="flex flex-col justify-center items-center h-loading">
                 <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
                 </div>
+                <div className="mt-4 text-2xl">Fetching local weather...</div>
               </div>
             </>
           } />
@@ -262,9 +284,10 @@ function App() {
               <h1 className="text-6xl text-center my-8">EasyWeather</h1>
               <Search />
               <UserWeather locationPermission={locationPermission} requestLocationAccess={requestLocationAccess} data={userLocationWeather} />
-              <div className="flex justify-center items-center h-loading-preview">
+              <div className="flex flex-col justify-center items-center h-loading-preview">
                 <div className="animate-spin border-8 border-gray-100 border-t-blue-500 rounded-3xl w-12 h-12">
                 </div>
+                <div className="mt-4 text-2xl">Fetching popular city weather...</div>
               </div>
             </>
           } />
@@ -287,7 +310,19 @@ function App() {
 
   if (error) {
     return (
-      <div>Error: {error}</div>
+      <Routes>
+        <Route path="/error" element={
+          <>
+            <h1 className="text-6xl text-center my-8">EasyWeather</h1>
+            <Search />
+            <section className="flex flex-col justify-center items-center h-loading text-2xl">
+              <h1 className="text-6xl">Error</h1>
+              <h2 className="m-8 text-center">An error occurred. Click the button below to return to the home page.</h2>
+              <Link to="/" className="rounded-lg bg-sky-400 hover:bg-sky-500 focus:bg-sky-500 px-12 py-6">Back to Home</Link>
+            </section>
+          </>
+        } />
+      </Routes>
     );
   }
 
