@@ -106,7 +106,6 @@ function App() {
     async function fetchWeatherData() {
       const result = await navigator.permissions.query({ name: 'geolocation' });
       setLocationPermission(result.state);
-      console.log(locationPermission);
       try {
         setLoading(true);
         if (result.state === 'prompt' || result.state === 'denied') {
@@ -194,9 +193,8 @@ function App() {
       alert('Please enable location access in your browser settings.');
     } else {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        () => {
           setLocationPermission('granted');
-          console.log('Location access granted', position);
         },
         (error) => {
           setLocationPermission('denied');
