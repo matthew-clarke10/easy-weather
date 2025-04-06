@@ -19,6 +19,20 @@ interface CurrentWeatherProps {
 
 interface ForecastDay {
   dt: number;
+  main: {
+    temp_min: number;
+    temp_max: number;
+  }
+  pressure: number;
+  humidity: number;
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+}
+
+/* interface ForecastDay {
+  dt: number;
   sunrise: number;
   sunset: number;
   temp: {
@@ -32,7 +46,7 @@ interface ForecastDay {
     icon: string;
   }[];
   speed: number;
-}
+} */
 
 interface ForecastWeatherProps {
   city: {
@@ -75,31 +89,32 @@ function DetailedWeather(props: DetailedWeatherProps) {
                   <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, currentWeather.main.temp_max)}%` }}></div>
                 </div>
               </div>
-              <div className="flex flex-col mx-auto text-2xl w-full">
-                <div className="flex flex-row md:flex-col">
-                  <div className="tempLow flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-blue-400 rounded-xl">
+              <div className="flex flex-col mx-auto text-xl md:text-sm w-full">
+                <div className="flex">
+                  <div className="tempHumidity flex flex-col md:flex-row md:gap-1 justify-center mx-auto my-2 w-2/5 md:w-auto aspect-square md:aspect-auto py-6 px-2 bg-blue-400 rounded-xl">
                     <div className="tempLowHeader">Low:</div>
                     <div className="tempLowBody">{currentWeather.main.temp_min}°C</div>
                   </div>
-                  <div className="tempHigh flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-red-400 rounded-xl">
+                  <div className="tempHumidity flex flex-col md:flex-row md:gap-1 justify-center mx-auto my-2 w-2/5 md:w-auto aspect-square md:aspect-auto py-6 px-2 bg-red-400 rounded-xl">
                     <div className="tempHighHeader">High:</div>
                     <div className="tempHighBody">{currentWeather.main.temp_max}°C</div>
                   </div>
                 </div>
-                <div className="flex flex-row md:flex-col">
-                  <div className="tempHumidity flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-yellow-300 rounded-xl">
+                <div className="flex">
+                  <div className="tempHumidity flex flex-col md:flex-row md:gap-1 justify-center mx-auto my-2 w-2/5 md:w-auto aspect-square md:aspect-auto py-6 px-2 bg-yellow-300 rounded-xl">
                     <div className="tempHumidityHeader">Humidity:</div>
                     <div className="tempHumidityBody">{currentWeather.main.humidity}%</div>
                   </div>
-                  <div className="tempWind flex flex-col justify-center mx-auto my-2 w-2/5 md:w-4/5 aspect-square md:aspect-auto py-6 bg-green-400 rounded-xl">
+                  <div className="tempHumidity flex flex-col md:flex-row md:gap-1 justify-center mx-auto my-2 w-2/5 md:w-auto aspect-square md:aspect-auto py-6 px-2 bg-green-400 rounded-xl">
                     <div className="tempWindHeader">Wind:</div>
                     <div className="tempWindBody">{currentWeather.wind.speed}m/s</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className={`text-center flex-col justify-center w-full h-full border-l-0 md:border-l-2 md:border-l-black`}>
+            <div className={`text-center flex-col justify-center w-full border-l-0 md:border-l-2 md:border-l-black`}>
               <div className="text-3xl my-2">Forecast</div>
+              <div className="py-0 md:py-8">
               {forecastWeather.list.map((day: ForecastDay, index: number) => {
                 const date = new Date(day.dt * 1000);
                 const weekdayOption: Intl.DateTimeFormatOptions = {
@@ -121,16 +136,17 @@ function DetailedWeather(props: DetailedWeatherProps) {
                       <img className="mx-4 w-12 h-12" src={`https://openweathermap.org/img/w/${day.weather[0].icon}.png`} alt="Weather icon" />
                     </div>
                     <div className="flex flex-row items-center w-full md:w-1/2 lg:w-3/5 mr-4">
-                      <div>{Math.round(day.temp.min)}</div>
+                      <div>{Math.round(day.main.temp_min)}</div>
                       <div className="rangeLine w-16 h-3 mx-2 flex-1 relative rounded-full">
-                        <div className="bg-blue-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.min)}%` }}></div>
-                        <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.max)}%` }}></div>
+                        <div className="bg-blue-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.main.temp_min)}%` }}></div>
+                        <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.main.temp_max)}%` }}></div>
                       </div>
-                      <div>{Math.round(day.temp.max)}</div>
+                      <div>{Math.round(day.main.temp_max)}</div>
                     </div>
                   </div>
                 );
               })}
+              </div>
             </div>
           </div>
         </section>

@@ -11,9 +11,9 @@ interface UserLocationWeatherInterface {
 
 interface ForecastData {
   dt: number;
-  temp: {
-    min: number;
-    max: number;
+  main: {
+    temp_min: number;
+    temp_max: number;
   };
   weather: {
     description: string;
@@ -36,7 +36,7 @@ function UserWeather(props: UserWeatherProps) {
       <Link to={`/weather/${props.data.city.name.replace(/\s+/g, '-').toLowerCase()}`} state={props.data.city.name} className="bg-sky-400 hover:bg-sky-500 w-11/12 my-8 mx-auto justify-center border-2 border-black flex items-center h-[108]">
         <section className="userLocationWeather flex flex-col justify-center items-center w-full h-full">
           <div className="text-2xl w-full p-4 text-center border-b-2 border-b-black">
-            Two Week Forecast for {props.data.city.name} ({props.data.city.country})
+            Five Day Forecast for {props.data.city.name} ({props.data.city.country})
           </div>
           {forecastDataHtml}
         </section>
@@ -65,7 +65,7 @@ function getPercentage(min: number, max: number, value: number) {
 
 function getForecastData(forecast: ForecastData[]) {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 grid-rows-7 md:grid-flow-col-dense w-full">
+    <section className="grid grid-cols-1 grid-rows-5 md:grid-flow-col-dense w-full">
       {forecast.map((day, index) => {
         const date = new Date(day.dt * 1000);
         const weekdayOption: Intl.DateTimeFormatOptions = {
@@ -81,18 +81,18 @@ function getForecastData(forecast: ForecastData[]) {
         const actualDate = date.toLocaleDateString("en-US", dateOption);
 
         return (
-          <div key={index} className={`flex items-center w-full mx-auto justify-center text-lg md:text-sm lg:text-lg ${index < 7 ? 'border-r-0 md:border-r-2 md:border-r-black' : ''}`}>
-            <div className="flex flex-row items-center md:w-1/2 lg:w-3/5 xl:w-2/5 ml-4">
+          <div key={index} className={`flex items-center w-full mx-auto justify-center text-lg md:text-sm lg:text-lg ${index < 7 ? 'border-r-0 md:border-r-black' : ''}`}>
+            <div className="flex flex-row items-center md:w-1/4 lg:w-1/5 ml-4">
               <div className="w-48 md:w-36">{weekday} {actualDate}</div>
               <img className="mx-4 w-12 h-12" src={`https://openweathermap.org/img/w/${day.weather[0].icon}.png`} alt="Weather icon" />
             </div>
-            <div className="flex flex-row items-center w-full md:w-1/2 lg:w-3/5 mr-4">
-              <div>{Math.round(day.temp.min)}</div>
+            <div className="flex flex-row items-center w-full md:w-3/4 lg:w-4/5 mr-4">
+              <div>{Math.round(day.main.temp_min)}</div>
               <div className="rangeLine w-16 h-3 mx-2 flex-1 relative rounded-full">
-                <div className="bg-blue-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.min)}%` }}></div>
-                <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.temp.max)}%` }}></div>
+                <div className="bg-blue-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.main.temp_min)}%` }}></div>
+                <div className="bg-red-600 absolute -top-1 w-5 h-5 border-black border-2 rounded-full" style={{ left: `${getPercentage(-10, 40, day.main.temp_max)}%` }}></div>
               </div>
-              <div>{Math.round(day.temp.max)}</div>
+              <div>{Math.round(day.main.temp_max)}</div>
             </div>
           </div>
         );

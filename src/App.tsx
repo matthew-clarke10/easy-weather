@@ -6,9 +6,10 @@ import DetailedWeather from './components/DetailedWeather';
 import NotFound from './components/NotFound';
 import { useEffect, useState, } from 'react';
 
-const apiKey = 'cc25d26bc930e2edf6c211fc3106986a';
+// const apiKey = 'cc25d26bc930e2edf6c211fc3106986a';
+const apiKey = '80582458eae5ce3112bfdedf6e61b8ed';
 const apiUrlCurrent = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&units=metric`;
-const apiUrlDaily = `https://api.openweathermap.org/data/2.5/forecast/daily?appid=${apiKey}&units=metric&cnt=14`;
+const apiUrlDaily = `https://api.openweathermap.org/data/2.5/forecast?appid=${apiKey}&units=metric`;
 
 const cities = ['Hong Kong', 'Bangkok', 'London', 'Singapore', 'Macau', 'Paris', 'Dubai', 'New York City', 'Kuala Lumpur', 'Shenzhen', 'Phuket', 'Istanbul', 'Delhi', 'Tokyo', 'Rome', 'Antalya', 'Taipei', 'Guangzhou', 'Mumbai', 'Prague', 'Mecca', 'Miami', 'Amsterdam', 'Seoul', 'Pattaya', 'Shanghai', 'Los Angeles', 'Las Vegas', 'Agra', 'Osaka', 'Barcelona', 'Milan', 'Denpasar', 'Vienna', 'Cancún', 'Berlin', 'Johor Bahru', 'Johannesburg', 'Ho Chi Minh City', 'Riyadh', 'Venice', 'Jaipur', 'Madrid', 'Orlando', 'Chennai', 'Dublin', 'Florence', 'Moscow'];
 
@@ -19,9 +20,9 @@ interface UserLocationWeatherInterface {
   }
   list: {
     dt: number;
-    temp: {
-      min: number;
-      max: number;
+    main: {
+      temp_min: number;
+      temp_max: number;
     };
     weather: {
       description: string;
@@ -66,7 +67,7 @@ interface CurrentWeatherInterface {
   };
 }
 
-interface ForecastDay {
+/* interface ForecastDay {
   dt: number;
   sunrise: number;
   sunset: number;
@@ -81,6 +82,20 @@ interface ForecastDay {
     icon: string;
   }[];
   speed: number;
+} */
+
+interface ForecastDay {
+  dt: number;
+  main: {
+    temp_min: number;
+    temp_max: number;
+  }
+  pressure: number;
+  humidity: number;
+  weather: {
+    description: string;
+    icon: string;
+  }[];
 }
 
 interface ForecastWeatherInterface {
@@ -171,7 +186,14 @@ function App() {
           throw new Error(`Error: ${forecastWeatherResponse.status} ${forecastWeatherResponse.statusText}`);
         }
 
-        const forecastWeatherData = await forecastWeatherResponse.json();
+        let forecastWeatherData = await forecastWeatherResponse.json();
+        forecastWeatherData = {
+          ...forecastWeatherData,
+          list: forecastWeatherData.list.filter((item: any) =>
+            item.dt_txt.endsWith("09:00:00")
+          ),
+        };
+        
         return forecastWeatherData;
       } catch (e) {
         console.error("Error fetching forecast weather:", e);
@@ -183,6 +205,7 @@ function App() {
       fetchWeatherData();
     } else if (location.pathname.startsWith('/weather/')) {
       const cityName = location.pathname.split('/weather/')[1].replace(/-/g, ' ');
+      console.log(cityName);
       fetchDetailedWeatherData(cityName);
     }
   }, [locationPermission, location.pathname]);
@@ -213,7 +236,13 @@ function App() {
 
         const { latitude, longitude } = position.coords;
         try {
-          const userLocationWeatherData = await fetchUserLocationWeatherData(latitude, longitude);
+          let userLocationWeatherData = await fetchUserLocationWeatherData(latitude, longitude);
+          userLocationWeatherData = {
+            ...userLocationWeatherData,
+            list: userLocationWeatherData.list.filter((item: any) =>
+              item.dt_txt.endsWith("09:00:00")
+            ),
+          };
           setUserLocationWeather(userLocationWeatherData);
         } catch (error) {
           console.error('Error:', error);
